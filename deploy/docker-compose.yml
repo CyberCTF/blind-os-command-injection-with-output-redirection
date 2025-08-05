@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  os_command_injection_time_delays_svc1:
+    build:
+      context: ../build
+      dockerfile: Dockerfile
+    container_name: os_command_injection_time_delays_svc1
+    environment:
+      - LAB_NAME=Blind OS command injection with output redirection
+      - LAB_DESCRIPTION=Web application vulnerable to blind OS command injection with output redirection
+    ports:
+      - "3206:80" 
