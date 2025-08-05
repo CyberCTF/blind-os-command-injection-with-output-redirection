@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechCorp - Système de Gestion</title>
+    <title>TechCorp - Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
@@ -67,7 +67,7 @@
                 <div class="flex items-center space-x-6">
                     <a href="index.php" class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-purple-500/20 transition-all duration-300">
                         <i data-feather="home" class="w-5 h-5"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                     <a href="feedback.php" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
                         <i data-feather="message-circle" class="w-5 h-5"></i>
@@ -87,11 +87,11 @@
         <!-- Hero Section -->
         <div class="text-center mb-16 animate-fade-in">
             <h2 class="text-5xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-green-200 bg-clip-text text-transparent">
-                Système de Gestion TechCorp
+                TechCorp Management System
             </h2>
             <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-                Plateforme moderne pour la gestion des retours clients et l'administration système.
-                Interface intuitive et sécurisée pour une expérience utilisateur optimale.
+                Modern platform for customer feedback management and system administration.
+                Intuitive and secure interface for optimal user experience.
             </p>
         </div>
 
@@ -102,13 +102,13 @@
                 <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
                     <i data-feather="message-circle" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-4">Gestion des Retours</h3>
+                <h3 class="text-2xl font-bold mb-4">Feedback Management</h3>
                 <p class="text-white/70 mb-6 leading-relaxed">
-                    Collectez et gérez les retours clients de manière efficace. 
-                    Interface intuitive pour une expérience utilisateur optimale.
+                    Collect and manage customer feedback efficiently. 
+                    Intuitive interface for optimal user experience.
                 </p>
                 <a href="feedback.php" class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300">
-                    <span>Accéder</span>
+                    <span>Access</span>
                     <i data-feather="arrow-right" class="w-5 h-5"></i>
                 </a>
             </div>
@@ -120,11 +120,11 @@
                 </div>
                 <h3 class="text-2xl font-bold mb-4">Administration</h3>
                 <p class="text-white/70 mb-6 leading-relaxed">
-                    Panneau d'administration complet pour surveiller les performances 
-                    et gérer les configurations système.
+                    Complete administration panel to monitor performance 
+                    and manage system configurations.
                 </p>
                 <a href="admin.php" class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300">
-                    <span>Accéder</span>
+                    <span>Access</span>
                     <i data-feather="arrow-right" class="w-5 h-5"></i>
                 </a>
             </div>
@@ -134,13 +134,13 @@
                 <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-6">
                     <i data-feather="shield" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-4">Sécurité Avancée</h3>
+                <h3 class="text-2xl font-bold mb-4">Advanced Security</h3>
                 <p class="text-white/70 mb-6 leading-relaxed">
-                    Protection des données et authentification sécurisée. 
-                    Conformité aux standards de sécurité les plus élevés.
+                    Data protection and secure authentication. 
+                    Compliance with the highest security standards.
                 </p>
                 <div class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 rounded-lg">
-                    <span>Actif</span>
+                    <span>Active</span>
                     <i data-feather="check" class="w-5 h-5"></i>
                 </div>
             </div>
@@ -148,7 +148,7 @@
 
         <!-- Stats Section -->
         <div class="glass-effect rounded-2xl p-8 border border-white/20 animate-slide-up" style="animation-delay: 0.6s;">
-            <h3 class="text-2xl font-bold mb-6 text-center">Statistiques Système</h3>
+            <h3 class="text-2xl font-bold mb-6 text-center">System Statistics</h3>
             <div class="grid md:grid-cols-4 gap-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold text-purple-400 mb-2">99.9%</div>
@@ -160,7 +160,7 @@
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold text-purple-400 mb-2">256-bit</div>
-                    <div class="text-white/70">Chiffrement</div>
+                    <div class="text-white/70">Encryption</div>
                 </div>
                 <div class="text-center">
                     <div class="text-3xl font-bold text-green-400 mb-2">ISO</div>
@@ -174,7 +174,7 @@
     <footer class="relative z-10 glass-effect border-t border-white/10 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-white/60">
-                <p>&copy; 2024 TechCorp. Tous droits réservés. | Système de gestion sécurisé</p>
+                <p>&copy; 2024 TechCorp. All rights reserved. | Secure management system</p>
             </div>
         </div>
     </footer>

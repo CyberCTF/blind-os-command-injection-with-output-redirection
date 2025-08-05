@@ -1,96 +1,96 @@
 # Blind OS Command Injection with Output Redirection
 
-Un laboratoire éducatif pour apprendre les techniques d'injection de commande OS aveugle avec redirection de sortie.
+An educational laboratory for learning blind OS command injection techniques with output redirection.
 
 ## 🎯 Description
 
-Ce lab présente une application web vulnérable à l'injection de commande OS aveugle. Contrairement aux injections classiques, l'output des commandes n'est pas directement visible. L'attaquant doit utiliser des techniques de redirection de sortie pour extraire des informations sensibles.
+This lab presents a web application vulnerable to blind OS command injection. Unlike classic injections, the command output is not directly visible. The attacker must use output redirection techniques to extract sensitive information.
 
-## 🚀 Démarrage Rapide
+## 🚀 Quick Start
 
-### Prérequis
-- Docker et Docker Compose installés
-- Port 3206 disponible
+### Prerequisites
+- Docker and Docker Compose installed
+- Port 3206 available
 
-### Lancement
+### Launch
 ```bash
-# Naviguer vers le répertoire deploy
+# Navigate to the deploy directory
 cd deploy
 
-# Lancer le lab
+# Launch the lab
 docker compose up --build -d
 
-# Accéder au lab
+# Access the lab
 # URL: http://localhost:3206
 ```
 
-## 🎯 Objectif du Lab
+## 🎯 Lab Objective
 
-Votre mission est de :
-1. **Identifier** la vulnérabilité d'injection de commande OS
-2. **Exploiter** la redirection de sortie (`>`, `>>`)
-3. **Extraire** le contenu de `/etc/passwd`
-4. **Accéder** au fichier créé via l'URL
+Your mission is to:
+1. **Identify** the OS command injection vulnerability
+2. **Exploit** output redirection (`>`, `>>`)
+3. **Extract** the content of `/etc/passwd`
+4. **Access** the created file via URL
 
-## 🛠️ Techniques Apprises
+## 🛠️ Techniques Learned
 
-- **Injection de commande OS** : Exécution de commandes shell
-- **Redirection de sortie** : Opérateurs `>`, `>>`
-- **Accès aux fichiers** : Accès aux fichiers via le serveur web
-- **Techniques aveugles** : Exploitation sans sortie directe
+- **OS Command Injection**: Shell command execution
+- **Output Redirection**: `>`, `>>` operators
+- **File Access**: Access files via web server
+- **Blind Techniques**: Exploitation without direct output
 
-## 📁 Structure du Projet
+## 📁 Project Structure
 
 ```
 Blind OS command injection with output redirection/
-├── build/                 # Code source de l'application
-│   ├── index.php         # Page d'accueil
-│   ├── feedback.php      # Formulaire vulnérable
-│   ├── admin.php         # Panneau d'administration
-│   ├── Dockerfile        # Configuration Docker
-│   └── images/          # Ressources graphiques
-├── deploy/               # Configuration Docker
-│   ├── docker-compose.yml # Configuration du lab
-│   └── README.md        # Documentation du déploiement
+├── build/                 # Application source code
+│   ├── index.php         # Home page
+│   ├── feedback.php      # Vulnerable form
+│   ├── admin.php         # Administration panel
+│   ├── Dockerfile        # Docker configuration
+│   └── images/          # Graphic resources
+├── deploy/               # Docker configuration
+│   ├── docker-compose.yml # Lab configuration
+│   └── README.md        # Deployment documentation
 ├── docs/                # Documentation
-│   └── WRITEUP.md      # Writeup complet
-├── test/                # Tests automatisés
-├── .github/             # Configuration CI/CD
-└── README.md           # Ce fichier
+│   └── WRITEUP.md      # Complete writeup
+├── test/                # Automated tests
+├── .github/             # CI/CD configuration
+└── README.md           # This file
 ```
 
-## 🔧 Détails Techniques
+## 🔧 Technical Details
 
-- **Technologie** : PHP 8.1 + Apache
-- **Vulnérabilité** : Input non validé dans `exec()`
-- **Port** : 3206
-- **Difficulté** : Débutant
+- **Technology**: PHP 8.1 + Apache
+- **Vulnerability**: Unvalidated input in `exec()`
+- **Port**: 3206
+- **Difficulty**: Beginner
 
-## 📝 Utilisation
+## 📝 Usage
 
-1. Lancez le lab avec Docker
-2. Naviguez vers le formulaire de feedback
-3. Testez l'injection de commande dans le champ email
-4. Utilisez la redirection de sortie pour extraire des données
-5. Accédez aux fichiers créés via l'interface web
+1. Launch the lab with Docker
+2. Navigate to the feedback form
+3. Test command injection in the email field
+4. Use output redirection to extract data
+5. Access created files via web interface
 
-## 🛡️ Avertissement de Sécurité
+## 🛡️ Security Warning
 
-⚠️ **Ce lab est délibérément vulnérable et conçu uniquement à des fins éducatives. Ne déployez jamais cette application en production.**
+⚠️ **This lab is deliberately vulnerable and designed for educational purposes only. Never deploy this application in production.**
 
 ## 📚 Documentation
 
-- **Guide d'exploitation** : Voir `/docs/WRITEUP.md`
-- **Writeup complet** : Inclus dans la documentation
-- **Exemples de payloads** : Fournis dans le lab
+- **Exploitation Guide**: See `/docs/WRITEUP.md`
+- **Complete Writeup**: Included in documentation
+- **Payload Examples**: Provided in the lab
 
 ## 🆘 Support
 
-Pour des questions ou problèmes :
-- Consultez la documentation dans `/docs/`
-- Vérifiez les logs Docker : `docker logs <container_name>`
-- Redémarrez le lab : `docker compose restart`
+For questions or issues:
+- Consult documentation in `/docs/`
+- Check Docker logs: `docker logs <container_name>`
+- Restart the lab: `docker compose restart`
 
 ---
 
-*Lab conçu pour l'apprentissage de la sécurité offensive dans un environnement contrôlé.* 
+*Lab designed for offensive security learning in a controlled environment.* 
