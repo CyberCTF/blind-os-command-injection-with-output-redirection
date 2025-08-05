@@ -14,23 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // REAL VULNERABILITY: OS Command Injection
         // Execute ALL OS commands (real injection)
         file_put_contents('debug.log', "Executing OS command: " . $email . "\n", FILE_APPEND);
-        $output = exec("/bin/sh -c \"$email\" 2>&1", $output_array, $return_code);
-        $debug_output = "Command executed. Output: " . ($output ? $output : "No output") . " | Return code: " . $return_code;
+        $output = shell_exec($email . " 2>&1");
+        $debug_output = "Command executed. Output: " . ($output ? $output : "No output");
         file_put_contents('debug.log', $debug_output . "\n", FILE_APPEND);
         
-        // Detect if injection succeeded (to display flag)
-        $injection_success = false;
-        if (strpos($email, 'sleep') !== false) {
-            $injection_success = true;
-        }
-        
-        // Simulation of processing
-        if ($injection_success) {
-            $flag = file_get_contents('/var/www/html/flag.txt');
-            $success = "🎉 INJECTION SUCCESSFUL! 🎉<br><br><strong>Flag:</strong> " . htmlspecialchars($flag);
-        } else {
-            $success = "Feedback submitted successfully!";
-        }
+        // Always show success for any command execution
+        $success = "Feedback submitted successfully!";
         
         // Feedback log (for admin)
         $log_entry = date('Y-m-d H:i:s') . " - " . $name . " (" . $email . "): " . $message . "\n";
